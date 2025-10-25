@@ -1,14 +1,12 @@
-package org.study;
+package org.study.example.streams;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -16,26 +14,31 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.study.exceptions.NotFoundException;
-import org.study.model.Animal;
-import org.study.services.FileService;
-import org.study.services.OwnerService;
+
+import org.study.exception.NotFoundException;
+import org.study.common.model.animal.Animal;
 
 public class StreamsExample {
 
     public static void main(String[] args) {
+        /* Functional programming concepts */
+
+        //Reference: https://www.turing.com/kb/introduction-to-functional-programming
+
         /*We are going to talk about Java Streams*/
 
         //Reference: https://www.baeldung.com/java-streams
         //Reference: https://www.baeldung.com/java-8-streams-introduction
 
-        //Java Streams are used to process collections of objects
-        //A stream is a sequence of objects that supports various methods which can be pipelined to produce the desired result
-        //Streams are lazy, meaning that they don't execute until we need them
-        //Streams are functional in nature,
-        // meaning that they don't change the original data structure,
-        // they only provide the result as per the pipelined methods
-        //A stream is not a data structure instead it takes input from the Collections, Arrays or I/O channels
+        /*
+        Java Streams are used to process collections of objects
+        A stream is a sequence of objects that supports various methods which can be pipelined to produce the desired result
+        Streams are lazy, meaning that they don't execute until we need them
+        Streams are functional in nature,
+         meaning that they don't change the original data structure,
+         they only provide the result as per the pipelined methods
+        A stream is not a data structure instead it takes input from the Collections, Arrays or I/O channels
+        */
 
         //We can create a stream from a list, set, or map
         List<String> names = List.of("John", "Mary", "Bob", "Alice");
@@ -49,6 +52,8 @@ public class StreamsExample {
 
         Stream<String> namesMapStream = namesMap.keySet().stream();
         Stream<String> namesMapValuesStream = namesMap.values().stream();
+        Stream<Map.Entry<String, String>> namesMapValuesStreamEntry =
+            namesMap.entrySet().stream();
 
         //We can create a stream from an array
         String[] namesArray = {"John", "Mary", "Bob", "Alice"};
@@ -63,8 +68,6 @@ public class StreamsExample {
         //Reference: https://www.baeldung.com/java-8-streams
         try {
             Stream<String> namesFileStream = Files.lines(Paths.get("src/main/resources/animals.csv"));
-
-
 
         } catch (IOException e) {
             System.out.println("Error reading file");
@@ -87,6 +90,7 @@ public class StreamsExample {
         //If a lambda expression returns a boolean we call it a predicate
         //Predicate is a functional interface that represents a predicate (boolean-valued function) of one argument
         //Reference: https://www.baeldung.com/java-predicate-chain
+
         Predicate<String> isLongerThan5 = s -> s.length() > 5;
 
         //If a lambda expression returns a void we call it a consumer
@@ -194,7 +198,10 @@ public class StreamsExample {
 
         animalList.stream()
             .filter(animal -> animal.getVaccines().stream()
-                .anyMatch(vaccine -> vaccine.getBrand().equalsIgnoreCase("Pfizer")))
+                .anyMatch(
+                    vaccine -> vaccine.getBrand().equalsIgnoreCase("Pfizer")
+                )
+            )
             .forEach(System.out::println);
 
 
@@ -264,7 +271,9 @@ public class StreamsExample {
             .collect(Collectors.toSet());
 
         Map <UUID, Animal> animalsById = animalList.stream()
-            .collect(Collectors.toMap(animal -> animal.getId(), animal -> animal));
+            .collect(Collectors.toMap(
+                animal -> animal.getId(),
+                animal -> animal));
 
         //These are the basic operations, but what happens if we want just one element of the stream (like the max or the min)
         //To answer this question we need to talk about Optional
@@ -403,101 +412,15 @@ public class StreamsExample {
             System.out.println("No animals older than 15");
         }
 
-        //Let's do something more difficult, we will load Owners from a file
-        OwnerService ownerService = new OwnerService();
-        FileService fileService = new FileService();
-
-
-
-
-        try {
-
-
-            ownerService.loadOwnersFromCSVFile("src/main/resources/owners.csv",";", fileService);
-
-            //Once we have the owners we will ask user to search owner by an specific word and this can be either in
-            // the name, username, email, address, city or state.
-            //The user can select the field to search by
-            //We will use the filter method to filter the owners
-            //We will use the anyMatch method to check if any of the fields of the owner match the search criteria
-
-            List<String> ownersFilteredBySearchCriteria =
-                filterOwnersBySearchCriteria(ownerService);
-
-            System.out.println("Owners filtered by search criteria: ");
-            ownersFilteredBySearchCriteria.forEach(System.out::println);
-
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (NotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
-
-    private static List<String> filterOwnersBySearchCriteria(OwnerService ownerService) {
-
-        //We will ask user to search owner by a specific word and this can be either in
-        // the name, username, email, address, city or state.
-        Scanner scanner = new Scanner(System.in);
-        Set<Integer> searchCriterias = new HashSet<>();
-        boolean allCriteriasSelected = false;
-        do {
-            System.out.println("Please select the search criterias: ");
-            System.out.println("1. Name");
-            System.out.println("2. Username");
-            System.out.println("3. Email");
-            System.out.println("4. Address");
-            System.out.println("5. City");
-            System.out.println("6. State");
-
-            try{
-                int searchCriteria = Integer.parseInt(scanner.nextLine());
-
-                if(searchCriterias.contains(searchCriteria)) {
-                    System.out.println("Search criteria already selected");
-                }
-
-                if( searchCriteria < 1 || searchCriteria > 6) {
-                    System.out.println("Invalid search criteria");
-                }
-                else {
-                    searchCriterias.add(searchCriteria);
-                }
-
-                System.out.println("Do you want to select another search criteria? (y/n)");
-                String answer = scanner.nextLine();
-
-                allCriteriasSelected = !answer.equalsIgnoreCase("y");
-            } catch(NumberFormatException e) {
-                System.out.println("Enter a number");
-            }
-
-
-
-        } while(!allCriteriasSelected);
-
-        System.out.println("Please enter the search term: ");
-        String searchTerm = scanner.nextLine();
-
-
-        return ownerService.getOwnersFilteredBy(searchCriterias, searchTerm);
-
-
-
     }
 
     private static Animal getNull() {
         return null;
     }
 
-    private static Optional<Animal> getMaxAge(List<Animal> animalList) {
-        //We can use the max method to get the maximum element of a stream
-        //As you may think, it also exists the min method
-        //Both of them expect a comparator
-        return animalList.stream()
+    private static Optional<Animal> getMaxAge(List<Animal> animals) {
+        return animals.stream()
             .max(Comparator.comparing(Animal::getAge));
-
     }
-}
+
+}    

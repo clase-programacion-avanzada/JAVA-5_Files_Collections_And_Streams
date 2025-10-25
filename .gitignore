@@ -37,6 +37,9 @@ bin/
 
 ### VS Code ###
 .vscode/
+*.bin
+*.dat
+*.class
 
 ### Mac OS ###
 .DS_Store

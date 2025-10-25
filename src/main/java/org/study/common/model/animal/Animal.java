@@ -1,4 +1,4 @@
-package org.study.model;
+package org.study.common.model.animal;
 
 import java.io.Serializable;
 import java.util.ArrayList;
