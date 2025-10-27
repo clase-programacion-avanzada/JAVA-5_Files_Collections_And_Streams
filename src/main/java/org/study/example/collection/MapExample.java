@@ -56,8 +56,8 @@ public class MapExample {
         System.out.println("4. ¿El mapa contiene la clave 'Japón'? " + hasJapan);
 
         // 5. containsValue(valor): Verifica si el mapa contiene un valor específico.
-        boolean hasMadrid = capitalCities.containsValue("Madrid");
-        System.out.println("5. ¿El mapa contiene el valor 'Madrid'? " + hasMadrid);
+        boolean hasMadrid = capitalCities.containsValue("Tokyo");
+        System.out.println("5. ¿El mapa contiene el valor 'Tokyo'? " + hasMadrid);
 
         // 6. size(): Devuelve el número de pares clave-valor.
         System.out.println("6. El tamaño actual del mapa es: " + capitalCities.size());

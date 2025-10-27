@@ -48,7 +48,7 @@ public class TextFileExample {
 
         String linesFileName = "ejemplo_lineas.txt";
         Path linesFilePath = Paths.get(prefix + linesFileName);
-        List<String> linesToWrite = Arrays.asList(
+        List<String> linesToWrite = List.of(
             "Primera línea de la lista.",
             "Segunda línea.",
             "Tercera y última línea."
@@ -74,7 +74,7 @@ public class TextFileExample {
         Path csvFilePath = Paths.get(prefix + csvFileName);
 
         // Primero, creamos un archivo de ejemplo con formato CSV (valores separados por comas).
-        List<String> csvLines = Arrays.asList(
+        List<String> csvLines = List.of(
             "Laptop,999.99,50",
             "Teclado,75.50,200",
             "Mouse,25.00,500",

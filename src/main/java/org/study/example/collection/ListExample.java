@@ -27,7 +27,8 @@ public class ListExample {
         System.out.println("--- SECCIÓN 1: MÉTODOS COMUNES DE LIST ---");
 
         // Usamos ArrayList para esta demostración general.
-        List<String> methodList = new ArrayList<>();
+        List<String> methodList =
+            new ArrayList<>();
 
         // 1. add(elemento): Añade un elemento al final de la lista.
         methodList.add("Manzana");
